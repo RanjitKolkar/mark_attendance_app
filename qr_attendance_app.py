@@ -84,9 +84,15 @@ with st.expander("📊 View Attendance Records (Admin Only)"):
     if os.path.exists(EXCEL_FILE):
         df = pd.read_excel(EXCEL_FILE)
         st.dataframe(df)
+
+        # ✅ FIXED DOWNLOAD BUTTON
+        from io import BytesIO
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine="openpyxl") as writer:
+            df.to_excel(writer, index=False)
         st.download_button(
-            "📥 Download Excel",
-            df.to_excel(index=False),
+            label="📥 Download Attendance Excel",
+            data=output.getvalue(),
             file_name="attendance.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
